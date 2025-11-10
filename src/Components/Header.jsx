@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { myContext } from '../Context/Context';
 
 const Header = () => {
-    const[search,setSearch]=useContext(myContext);
+    const {search,setSearch,year,setYear,genre,setGenre,rating,setRating}=useContext(myContext);
     return (
         <>
     <header className="bg-white shadow sticky top-0 z-30">
@@ -33,7 +33,7 @@ const Header = () => {
           <div className="flex gap-2 items-center">
             {/* Genre select */}
             <label htmlFor="genre" className="sr-only">Filter by genre</label>
-            <select id="genre" name="genre" className="appearance-none bg-white border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="genre" value={genre} onChange={(e =>setGenre(e.target.value))} name="genre" className="appearance-none bg-white border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value>All genres</option>
               <option>Action</option>
               <option>Adventure</option>
@@ -45,7 +45,7 @@ const Header = () => {
             </select>
             {/* Year select */}
             <label htmlFor="year" className="sr-only">Filter by year</label>
-            <select id="year" name="year" className="appearance-none bg-white border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="year" value={year} onChange={(e)=>setYear(e.target.value)} name="year" className="appearance-none bg-white border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value>All years</option>
               <option>2025</option>
               <option>2024</option>
@@ -57,7 +57,7 @@ const Header = () => {
             </select>
             {/* Rating select */}
             <label htmlFor="rating" className="sr-only">Filter by rating</label>
-            <select id="rating" name="rating" className="appearance-none bg-white border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="rating" value={rating} onChange={(e)=>setRating(e.target.value)} name="rating" className="appearance-none bg-white border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value>Any rating</option>
               <option value={9}>9+ (Top rated)</option>
               <option value={8}>8+</option>

@@ -1,46 +1,68 @@
 import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { myContext } from "../Context/Context";
-import sampleImages from "../Images/sampleImages";
-
+import Placeholder from "../Components/Placeholder";
 
 const Home = () => {
+  const { search, year, genre,rating } = useContext(myContext);
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
-  const [search] = useContext(myContext);
 
   useEffect(() => {
     setData([]);
     setPage(1);
   }, [search]);
 
+
   useEffect(() => {
-    fetchdata(search, page);
+    fetchData(search, page);
   }, [page, search]);
 
-  const fetchdata = async (query, pageNumber) => {
+
+  const fetchData = async (query, pageNumber) => {
     try {
       if (!query) return;
+
+ 
       const response = await axios.get(
         `https://www.omdbapi.com/?apikey=80440b73&s=${query}&page=${pageNumber}`
       );
       const newMovies = response.data.Search || [];
-      setData((prev) => [...prev, ...newMovies]);
+
+   
+      const movieDetails = await Promise.all(
+        newMovies.map(async (movie) => {
+          const details = await axios.get(
+           
+            `https://www.omdbapi.com/?apikey=80440b73&i=${movie.imdbID}`
+          );
+          return details.data;
+        })
+      );
+
+
+      setData((prev) => [...prev, ...movieDetails]);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching movies:", error);
     }
   };
 
+  const filteredMovies = data.filter((movie) => {
+    const matchYear = year === "" || movie.Year === year;
+    const matchGenre =
+      genre === "" || (movie.Genre && movie.Genre.includes(genre));
+      const matchrating = rating === "" || (movie.imdbRating && movie.imdbRating.includes(rating));
+    return matchYear && matchGenre && matchrating;
+  });
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {data.length === 0 && (
-        <div className="flex justify-center items-center flex-wrap gap-6">
-         <Placeholder />
-        </div>
-      )}
+ 
+      {filteredMovies.length === 0 && <Placeholder />}
 
+ 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {data.map((ele, index) => (
+        {filteredMovies.map((ele, index) => (
           <div
             key={index}
             className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
@@ -60,10 +82,12 @@ const Home = () => {
             />
             <h2 className="mt-3 text-lg font-semibold">{ele.Title}</h2>
             <p className="text-gray-600 text-sm">📅 {ele.Year}</p>
+            <p className="text-gray-500 text-sm mt-1">🎭 {ele.Genre}</p>
           </div>
         ))}
       </div>
 
+   
       {data.length > 0 && (
         <div className="flex justify-center mt-8">
           <button
