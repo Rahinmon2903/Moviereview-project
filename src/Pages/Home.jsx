@@ -8,16 +8,16 @@ import Loading1 from "../Components/Loading1";
 const Home = () => {
   const { search, year, genre, rating } = useContext(myContext);
   const [data, setData] = useState([]); //step 1 for fetching data from API
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
   const [Loading, setLoading] = useState(false);
 
-  // ⭐ Load and store user ratings in localStorage
+  //  Load and store user ratings in localStorage
   const [ratings, setRatings] = useState(() => {
     const saved = localStorage.getItem("moviereview");
     return saved ? JSON.parse(saved) : {};
   });
 
-  // ⭐ Update rating function
+  //  Update rating function when the star value increase
   const handleRating = (id, value) => {
     const updatedRatings = { ...ratings, [id]: value };
     setRatings(updatedRatings);
@@ -40,7 +40,7 @@ const Home = () => {
     }
   }, []);
 
-  // Attach and clean scroll listener
+  //  scroll listener
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -51,13 +51,14 @@ const Home = () => {
     if (search) fetchData(search, page);
   }, [page, search]);
 
-  const API_KEY = "eb09daa8"; // 🔑 Your OMDB API key
+  const API_KEY = "eb09daa8"; //  API key
 
   const fetchData = async (query, pageNumber) => {
     if (Loading || !query) return;
 
     try {
       setLoading(true);
+      //first api call
       const response = await axios.get(
         `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}&page=${pageNumber}`
       );
@@ -66,6 +67,7 @@ const Home = () => {
 
       const movieDetails = await Promise.all(
         newMovies.map(async (movie) => {
+          //second api call
           const details = await axios.get(
             `https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}`
           );
@@ -102,13 +104,19 @@ const Home = () => {
           <Link to={`/movies/${ele.imdbID}`} key={ele.imdbID}>
             <div className="group relative bg-[#111] border border-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
               <img
-                src={
-                  ele.Poster !== "N/A"
-                    ? ele.Poster
-                    : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-thumbnail-graphic-illustration-vector-png-image_40966590.jpg"
-                }
+                src={ele.Poster}
                 alt={ele.Title}
                 className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=800&q=80"; // 🎬 creative fallback image
+                  e.target.classList.add(
+                    "object-cover",
+                    "blur-[1px]",
+                    "brightness-75"
+                  );
+                }}
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
@@ -129,15 +137,16 @@ const Home = () => {
                     <span
                       key={star}
                       onClick={(e) => {
-                        e.preventDefault(); // Prevent Link click
+                        e.preventDefault(); // Prevent refresh
 
                         e.stopPropagation(); // stop Link navigation
                         handleRating(ele.imdbID, star);
                       }}
-                      className={`cursor-pointer text-lg transition-all ${star <= (ratings[ele.imdbID] || 0)
+                      className={`cursor-pointer text-lg transition-all ${
+                        star <= (ratings[ele.imdbID] || 0)
                           ? "text-yellow-400 scale-110"
                           : "text-gray-500 hover:text-yellow-300"
-                        }`}
+                      }`}
                     >
                       ★
                     </span>

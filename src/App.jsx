@@ -4,6 +4,7 @@ import Header from "./Components/Header";
 import { BrowserRouter, Routes,Route } from "react-router-dom";
 
 import Cardpages from "./Pages/Cardpages";
+import PageNotFound from "./Pages/PageNotFound";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/movies/:id" element={<Cardpages />}></Route>
+          <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
       </BrowserRouter>
     </>
