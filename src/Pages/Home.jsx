@@ -10,10 +10,18 @@ const Home = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [Loading, setLoading] = useState(false);
-  const[rating,setRating]=useState(()=>{
+  const[rating1,setRating]=useState(()=>{
     const saved = localStorage.getItem("moviereview");
     return saved ? JSON.parse(saved) : {} ;
   })
+
+  const updateRating=(id,value)=>{
+    const updatedValue= {...rating1,[id]:value};
+    setRating(updatedValue);
+    localStorage.setItem("moviereview",JSON.stringify(updatedValue));
+
+
+  }
 
   useEffect(() => {
     setData([]);
