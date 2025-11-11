@@ -84,4 +84,4 @@ npm install
 
 bash
 npm run dev
-👉 Your project will be available at: http://localhost:5173
+
