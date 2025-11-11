@@ -24,29 +24,28 @@ const Cardpages = () => {
   if (!movie) {
     return (
       <div className="relative flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white overflow-hidden">
-        {/*  Background image */}
+     
         <img
           src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1600&q=80"
           alt="Loading Background"
           className="absolute inset-0 w-full h-full object-cover opacity-30 blur-sm"
         />
 
-        {/*  Overlay gradient for depth */}
+      
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
 
-        {/*  Animated film reel or loading icon */}
+      
         <div className="relative z-10 flex flex-col items-center space-y-6">
           <div className="relative">
             <div className="w-20 h-20 border-4 border-gray-800 border-t-blue-500 rounded-full animate-spin shadow-[0_0_25px_rgba(59,130,246,0.7)]"></div>
             <div className="absolute inset-2 border-4 border-blue-500/20 rounded-full"></div>
           </div>
 
-          {/*  Text with animated glow */}
           <h2 className="text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 animate-pulse drop-shadow-lg">
             Loading Movie Details...
           </h2>
 
-          {/*  Subtitle with flicker effect */}
+      
           <p className="text-gray-400 text-sm animate-pulse tracking-widest uppercase">
             Please wait while we fetch the magic 🎬
           </p>
@@ -57,7 +56,7 @@ const Cardpages = () => {
 
   return (
     <div className="relative min-h-screen bg-[#070707] text-white overflow-hidden">
-      {/* 🔹 Cinematic blurred poster background */}
+  
       <div
         className="absolute inset-0 bg-cover bg-center blur-3xl opacity-40 scale-110"
         style={{
@@ -65,10 +64,10 @@ const Cardpages = () => {
         }}
       ></div>
 
-      {/* 🔹 Subtle dark gradient overlay */}
+    
       <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/95"></div>
 
-      {/* 🔹 Main Content */}
+      {/*  Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row gap-12 items-center md:items-start animate-fadeIn">
         {/* Poster */}
         <div className="w-full md:w-1/3 flex-shrink-0">
