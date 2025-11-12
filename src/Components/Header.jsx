@@ -93,7 +93,7 @@ const Home = () => {
     }
   }, [search, page]);
 
-  // 🔹 Filter Logic
+  // 🔹 Filter Logic — Independent Filtering
   const filteredMovies = useMemo(() => {
     return data.filter((movie) => {
       const matchYear = !year || (movie.Year && movie.Year.includes(year));
@@ -114,7 +114,7 @@ const Home = () => {
 
   return (
     <div className="relative min-h-screen p-8 bg-[#0a0a0a] text-white overflow-hidden">
-    
+      {/* Background Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-[#0a0a0a] to-gray-900 opacity-90 pointer-events-none" />
 
       {/* Placeholder if no results */}
@@ -139,6 +139,7 @@ const Home = () => {
                 className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
               />
 
+              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
 
               {/* Content */}

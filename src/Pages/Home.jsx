@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import { myContext } from "../Context/Context";
 import Placeholder from "../Components/Placeholder";
 import { Link } from "react-router-dom";
@@ -11,22 +17,21 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [Loading, setLoading] = useState(false);
 
-  // ⭐ Load and store user ratings in localStorage
+  // ⭐ LocalStorage for user ratings
   const [ratings, setRatings] = useState(() => {
     const saved = localStorage.getItem("moviereview");
     return saved ? JSON.parse(saved) : {};
   });
 
-  // ⭐ Update rating function
   const handleRating = (id, value) => {
     const updatedRatings = { ...ratings, [id]: value };
     setRatings(updatedRatings);
     localStorage.setItem("moviereview", JSON.stringify(updatedRatings));
   };
 
-  const API_KEY = "eb09daa8"; // 🔑 Your OMDb API key
+  const API_KEY = "eb09daa8"; // Replace with your OMDb API key
 
-  // 🔹 Infinite scroll
+  // 🔹 Infinite Scroll Logic
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
@@ -41,9 +46,9 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // 🔹 Fetch movie data
+  // 🔹 Fetch Data
   const fetchData = async (query, pageNumber) => {
-    if (Loading || !query) return; // Only fetch when a query exists
+    if (Loading || !query) return; // only when search text exists
 
     try {
       setLoading(true);
@@ -53,7 +58,7 @@ const Home = () => {
 
       const newMovies = response.data.Search || [];
 
-      // Fetch full details for each movie
+      // Fetch detailed info for each movie (to get Genre, Ratings, etc.)
       const movieDetails = await Promise.all(
         newMovies.map(async (movie) => {
           try {
@@ -75,47 +80,52 @@ const Home = () => {
     }
   };
 
-  // 🔹 Reset data when search changes
+  // 🔹 Reset Data on Search Change
   useEffect(() => {
     setData([]);
     setPage(1);
   }, [search]);
 
-  // 🔹 Fetch when search text changes
+  // 🔹 Fetch Movies when Search or Page changes
   useEffect(() => {
     if (search) {
       fetchData(search, page);
     }
   }, [search, page]);
 
-  // 🔹 Apply Filters (individually or combined)
-  const filteredMovies = data.filter((movie) => {
-    const matchYear =
-      year === "" || (movie.Year && movie.Year.includes(year));
+  // 🔹 Filter Logic
+  const filteredMovies = useMemo(() => {
+    return data.filter((movie) => {
+      const matchYear = !year || (movie.Year && movie.Year.includes(year));
 
-    const matchGenre =
-      genre === "" ||
-      (movie.Genre &&
-        movie.Genre.toLowerCase().split(", ").includes(genre.toLowerCase()));
+      const matchGenre =
+        !genre ||
+        (movie.Genre &&
+          movie.Genre.toLowerCase().split(", ").includes(genre.toLowerCase()));
 
-    const matchRating =
-      rating === "" ||
-      (!isNaN(movie.imdbRating) &&
-        parseFloat(movie.imdbRating) >= parseFloat(rating));
+      const matchRating =
+        !rating ||
+        (!isNaN(movie.imdbRating) &&
+          parseFloat(movie.imdbRating) >= parseFloat(rating));
 
-    return matchYear && matchGenre && matchRating;
-  });
+      return matchYear && matchGenre && matchRating;
+    });
+  }, [data, year, genre, rating]);
 
   return (
     <div className="relative min-h-screen p-8 bg-[#0a0a0a] text-white overflow-hidden">
+    
       <div className="absolute inset-0 bg-gradient-to-t from-black via-[#0a0a0a] to-gray-900 opacity-90 pointer-events-none" />
 
+      {/* Placeholder if no results */}
       {filteredMovies.length === 0 && !Loading && <Placeholder />}
 
+      {/* Movie Grid */}
       <div className="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 z-10">
         {filteredMovies.map((ele) => (
           <Link to={`/movies/${ele.imdbID}`} key={ele.imdbID}>
             <div className="group relative bg-[#111] border border-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+              {/* Poster */}
               <img
                 src={
                   ele.Poster !== "N/A"
@@ -130,6 +140,8 @@ const Home = () => {
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+
+              {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <h2 className="text-lg font-semibold truncate">{ele.Title}</h2>
                 <div className="flex justify-between text-gray-300 text-sm mt-1">
@@ -173,6 +185,7 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Loading Spinner */}
       {Loading && <Loading1 />}
     </div>
   );
