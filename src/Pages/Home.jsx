@@ -132,29 +132,31 @@ const Home = () => {
                 </p>
 
                 {/* ⭐ Star Rating */}
-                <div className="flex mt-2 space-x-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      onClick={(e) => {
-                        e.preventDefault(); // Prevent refresh
-
-                        e.stopPropagation(); // stop Link navigation
-                        handleRating(ele.imdbID, star);
-                      }}
-                      className={`cursor-pointer text-lg transition-all ${
-                        star <= (ratings[ele.imdbID] || 0)
-                          ? "text-yellow-400 scale-110"
-                          : "text-gray-500 hover:text-yellow-300"
-                      }`}
-                    >
-                      ★
-                    </span>
-                  ))}
+                <div className="flex mt-2 flex-wrap gap-[2px]">
+                  {[...Array(10)].map((_, index) => {
+                    const star = index + 1;
+                    return (
+                      <span
+                        key={star}
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevent refresh
+                          e.stopPropagation(); // Stop Link navigation
+                          handleRating(ele.imdbID, star);
+                        }}
+                        className={`cursor-pointer text-base sm:text-lg transition-transform duration-150 ${
+                          star <= (ratings[ele.imdbID] || 0)
+                            ? "text-yellow-400 scale-110 drop-shadow-[0_0_4px_rgba(250,204,21,0.6)]"
+                            : "text-gray-600 hover:text-yellow-300"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    );
+                  })}
                 </div>
 
                 <p className="text-xs text-gray-400 mt-1">
-                  Your Rating: {ratings[ele.imdbID] || 0}/5
+                  Your Rating: {ratings[ele.imdbID] || 0}/10
                 </p>
               </div>
             </div>
