@@ -148,11 +148,11 @@ const Home = () => {
                 src={
                   ele.Poster !== "N/A"
                     ? ele.Poster
-                    : "https://i.ibb.co/5xJdm0t/movie-placeholder.jpg"
+                    : "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=800&q=80"
                 }
                 alt={ele.Title}
                 onError={(e) =>
-                  (e.target.src = "https://i.ibb.co/5xJdm0t/movie-placeholder.jpg")
+                  (e.target.src = "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=800&q=80")
                 }
                 className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
               />

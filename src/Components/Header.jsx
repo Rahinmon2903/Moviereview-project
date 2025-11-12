@@ -43,7 +43,7 @@ const Header = () => {
             aria-label="Search movies"
           >
             <div className="flex flex-col sm:flex-row items-stretch gap-3">
-              {/* 🔍 Search Input */}
+              {/*  Search Input */}
               <div className="flex items-center flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 border border-gray-700 rounded-xl px-3 py-1.5 text-sm shadow-inner focus-within:ring-2 focus-within:ring-blue-600 hover:border-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.45)] transition-all duration-300 backdrop-blur-sm">
                 <svg
                   className="w-5 h-5 text-gray-400 ml-2"
