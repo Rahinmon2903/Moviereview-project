@@ -29,9 +29,9 @@ const Home = () => {
     localStorage.setItem("moviereview", JSON.stringify(updatedRatings));
   };
 
-  const API_KEY = "eb09daa8"; // Your OMDb API key
+  const API_KEY = "eb09daa8"; // your OMDb API key
 
-  // Infinite Scroll Logic
+  //  Infinite scroll logic
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1 >=
@@ -46,7 +46,7 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // 🔹 Fetch Data
+  // 🔹 Fetch data with full details
   const fetchData = async (query, pageNumber) => {
     if (Loading || !query) return;
 
@@ -58,58 +58,57 @@ const Home = () => {
 
       const newMovies = response.data.Search || [];
 
-      // Fetch full details for each movie
-      const movieDetails = await Promise.all(
+      // Fetch extra info for each movie
+      const movieDetails = await Promise.allSettled(
         newMovies.map(async (movie) => {
-          try {
-            const details = await axios.get(
-              `https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}`
-            );
-            return details.data;
-          } catch {
-            return movie;
-          }
+          const details = await axios.get(
+            `https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}&plot=short`
+          );
+          return details.data;
         })
       );
 
-      setData((prev) => [...prev, ...movieDetails]);
+      const validMovies = movieDetails
+        .filter((res) => res.status === "fulfilled" && res.value.Response === "True")
+        .map((res) => res.value);
+
+      setData((prev) => [...prev, ...validMovies]);
     } catch (error) {
-      console.log("Error fetching movies:", error);
+      console.error("Error fetching movies:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 Reset data on search change
+  // Reset data on search change
   useEffect(() => {
     setData([]);
     setPage(1);
   }, [search]);
 
-  // 🔹 Fetch data on search or page change
+  //  Fetch when search or page changes
   useEffect(() => {
     if (search) {
       fetchData(search, page);
     }
   }, [search, page]);
 
-  // 🔹 Trigger re-render when filters change (even without new search)
+  //  Trigger re-render when filters change (without refetch)
   useEffect(() => {
     setData((prev) => [...prev]);
   }, [genre, year, rating]);
 
-  // 🔹 Filtering Logic (independent)
+  //  Filtering logic (independent)
   const filteredMovies = useMemo(() => {
     return data.filter((movie) => {
-      const movieGenre = movie.Genre ? movie.Genre.toLowerCase() : "";
+      const movieGenres = movie.Genre ? movie.Genre.toLowerCase().split(", ") : [];
       const movieYear = movie.Year || "";
       const movieRating = parseFloat(movie.imdbRating) || 0;
 
       const matchYear = !year || movieYear.includes(year);
       const matchGenre =
-        !genre || movieGenre.includes(genre.toLowerCase());
-      const matchRating =
-        !rating || movieRating >= parseFloat(rating);
+        !genre || movieGenres.some((g) => g.trim() === genre.toLowerCase());
+      const matchRating = !rating || movieRating >= parseFloat(rating);
 
       return matchYear && matchGenre && matchRating;
     });
@@ -117,17 +116,17 @@ const Home = () => {
 
   return (
     <div className="relative min-h-screen p-8 bg-[#0a0a0a] text-white overflow-hidden">
-   
+      {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-[#0a0a0a] to-gray-900 opacity-90 pointer-events-none" />
 
       {/* Placeholder if no results */}
       {filteredMovies.length === 0 && !Loading && <Placeholder />}
 
+      {/* Movie Grid */}
       <div className="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 z-10">
         {filteredMovies.map((ele) => (
           <Link to={`/movies/${ele.imdbID}`} key={ele.imdbID}>
             <div className="group relative bg-[#111] border border-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
-              
               {/* Poster */}
               <img
                 src={
@@ -156,7 +155,7 @@ const Home = () => {
                   🎭 {ele.Genre}
                 </p>
 
-                {/* 10-Star Rating System */}
+                {/*10-Star Rating System */}
                 <div className="flex mt-2 flex-wrap gap-[2px]">
                   {[...Array(10)].map((_, index) => {
                     const star = index + 1;
@@ -196,3 +195,4 @@ const Home = () => {
 };
 
 export default Home;
+

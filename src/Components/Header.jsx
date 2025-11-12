@@ -20,7 +20,7 @@ const Header = () => {
           {/* 🔹 Logo + Brand */}
           <div className="flex items-center gap-3">
             {/* Logo Icon */}
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_25px_rgba(79,70,229,0.6)] ">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-[0_0_25px_rgba(79,70,229,0.6)]">
               CV
             </div>
 
@@ -43,7 +43,7 @@ const Header = () => {
             aria-label="Search movies"
           >
             <div className="flex flex-col sm:flex-row items-stretch gap-3">
-              {/*  Search Input */}
+              {/* 🔍 Search Input */}
               <div className="flex items-center flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 border border-gray-700 rounded-xl px-3 py-1.5 text-sm shadow-inner focus-within:ring-2 focus-within:ring-blue-600 hover:border-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.45)] transition-all duration-300 backdrop-blur-sm">
                 <svg
                   className="w-5 h-5 text-gray-400 ml-2"
@@ -76,44 +76,23 @@ const Header = () => {
                 </button>
               </div>
 
-              {/* Filters */}
+              {/*  Filters */}
               <div className="flex gap-2 items-center flex-wrap justify-center sm:justify-start">
+                {/* Genre */}
                 <select
                   id="genre"
                   value={genre}
                   onChange={(e) => setGenre(e.target.value)}
                   className="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 border border-gray-700 text-gray-100 rounded-xl px-4 py-2.5 text-sm font-semibold tracking-wide shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.45)] transition-all duration-300 cursor-pointer backdrop-blur-sm"
                 >
-                  <option value="" className="text-gray-400">
-                    🎭 All Genres
-                  </option>
-                  <option value="Action" className="text-red-400 font-medium">
-                    🔥 Action
-                  </option>
-                  <option
-                    value="Adventure"
-                    className="text-yellow-300 font-medium"
-                  >
-                    🗺️ Adventure
-                  </option>
-                  <option value="Comedy" className="text-green-300 font-medium">
-                    😂 Comedy
-                  </option>
-                  <option value="Drama" className="text-purple-300 font-medium">
-                    🎭 Drama
-                  </option>
-                  <option value="Horror" className="text-pink-300 font-medium">
-                    👻 Horror
-                  </option>
-                  <option value="Sci-Fi" className="text-blue-300 font-medium">
-                    🚀 Sci-Fi
-                  </option>
-                  <option
-                    value="Animation"
-                    className="text-teal-300 font-medium"
-                  >
-                    🐭 Animation
-                  </option>
+                  <option value="">🎭 All Genres</option>
+                  <option value="Action">🔥 Action</option>
+                  <option value="Adventure">🗺️ Adventure</option>
+                  <option value="Comedy">😂 Comedy</option>
+                  <option value="Drama">🎭 Drama</option>
+                  <option value="Horror">👻 Horror</option>
+                  <option value="Sci-Fi">🚀 Sci-Fi</option>
+                  <option value="Animation">🐭 Animation</option>
                 </select>
 
                 {/* Year */}
@@ -123,16 +102,14 @@ const Header = () => {
                   onChange={(e) => setYear(e.target.value)}
                   className="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 border border-gray-700 text-gray-100 rounded-xl px-4 py-2.5 text-sm font-semibold tracking-wide shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.45)] transition-all duration-300 cursor-pointer backdrop-blur-sm"
                 >
-                  <option value="" className="text-gray-400">
-                    📅 All Years
-                  </option>
-                  <option className="text-blue-300 font-medium">2025</option>
-                  <option className="text-blue-300 font-medium">2024</option>
-                  <option className="text-blue-300 font-medium">2023</option>
-                  <option className="text-blue-300 font-medium">2022</option>
-                  <option className="text-blue-300 font-medium">2020</option>
-                  <option className="text-blue-300 font-medium">2019</option>
-                  <option className="text-blue-300 font-medium">2010s</option>
+                  <option value="">📅 All Years</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                  <option value="2010">2010s</option>
                 </select>
 
                 {/* Rating */}
@@ -142,24 +119,12 @@ const Header = () => {
                   onChange={(e) => setRating(e.target.value)}
                   className="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 border border-gray-700 text-gray-100 rounded-xl px-4 py-2.5 text-sm font-semibold tracking-wide shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500 hover:shadow-[0_0_12px_rgba(59,130,246,0.45)] transition-all duration-300 cursor-pointer backdrop-blur-sm"
                 >
-                  <option value="" className="text-gray-400">
-                    🎞️ Any Rating
-                  </option>
-                  <option value={9} className="text-yellow-400 font-semibold">
-                    ⭐ 9+ — Top Rated Legends
-                  </option>
-                  <option value={8} className="text-yellow-300 font-medium">
-                    🌟 8+ — Critically Acclaimed
-                  </option>
-                  <option value={7} className="text-yellow-200">
-                    ✨ 7+ — Great Picks
-                  </option>
-                  <option value={6} className="text-blue-300">
-                    🎬 6+ — Worth Watching
-                  </option>
-                  <option value={5} className="text-gray-300">
-                    🍿 5+ — Casual Entertainment
-                  </option>
+                  <option value="">🎞️ Any Rating</option>
+                  <option value="9">⭐ 9+ — Top Rated</option>
+                  <option value="8">🌟 8+ — Critically Acclaimed</option>
+                  <option value="7">✨ 7+ — Great Picks</option>
+                  <option value="6">🎬 6+ — Worth Watching</option>
+                  <option value="5">🍿 5+ — Casual Fun</option>
                 </select>
               </div>
 
@@ -172,7 +137,7 @@ const Header = () => {
               </button>
             </div>
 
-            {/*  Subtext */}
+            {/* Subtext */}
             <div className="mt-3 hidden sm:flex items-center justify-between text-xs text-gray-400">
               <div>
                 Showing <strong className="text-blue-400">results</strong> for
