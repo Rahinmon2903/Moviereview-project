@@ -11,7 +11,7 @@ const Cardpages = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          `https://www.omdbapi.com/?apikey=eb09daa8&i=${id}&plot=full`
+          `https://www.omdbapi.com/?apikey=671700c1&i=${id}&plot=full`
         );
         setMovie(res.data);
       } catch (error) {

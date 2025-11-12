@@ -30,7 +30,7 @@ const Home = () => {
     localStorage.setItem("moviereview", JSON.stringify(updatedRatings));
   };
 
-  const API_KEY = "eb09daa8"; //  API key
+  const API_KEY = "671700c1"; //  API key
 
   //  Infinite scroll
   const handleScroll = useCallback(() => {
