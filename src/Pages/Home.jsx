@@ -16,6 +16,7 @@ const Home = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [Loading, setLoading] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   //  LocalStorage for user ratings
   const [ratings, setRatings] = useState(() => {
@@ -29,12 +30,12 @@ const Home = () => {
     localStorage.setItem("moviereview", JSON.stringify(updatedRatings));
   };
 
-  const API_KEY = "eb09daa8"; // your OMDb API key
+  const API_KEY = "eb09daa8"; //  API key
 
-  //  Infinite scroll logic
+  //  Infinite scroll
   const handleScroll = useCallback(() => {
     if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      window.innerHeight + document.documentElement.scrollTop + 5 >=
       document.documentElement.scrollHeight
     ) {
       setPage((prev) => prev + 1);
@@ -46,9 +47,9 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // 🔹 Fetch data with full details
+  //  Fetch movie data (with details)
   const fetchData = async (query, pageNumber) => {
-    if (Loading || !query) return;
+    if (Loading) return;
 
     try {
       setLoading(true);
@@ -57,8 +58,9 @@ const Home = () => {
       );
 
       const newMovies = response.data.Search || [];
+      if (newMovies.length === 0) return;
 
-      // Fetch extra info for each movie
+      // Fetch extra details for each movie
       const movieDetails = await Promise.allSettled(
         newMovies.map(async (movie) => {
           const details = await axios.get(
@@ -69,46 +71,60 @@ const Home = () => {
       );
 
       const validMovies = movieDetails
-        .filter((res) => res.status === "fulfilled" && res.value.Response === "True")
+        .filter(
+          (res) => res.status === "fulfilled" && res.value.Response === "True"
+        )
         .map((res) => res.value);
 
       setData((prev) => [...prev, ...validMovies]);
     } catch (error) {
       console.error("Error fetching movies:", error);
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 300);
     }
   };
 
-  // Reset data on search change
+  // Reset when search changes
   useEffect(() => {
     setData([]);
     setPage(1);
   }, [search]);
 
-  //  Fetch when search or page changes
+  // Fetch on search or page change
   useEffect(() => {
     if (search) {
       fetchData(search, page);
     }
   }, [search, page]);
 
-  //  Trigger re-render when filters change (without refetch)
+  // Default fetch (so filters work without searching)
   useEffect(() => {
-    setData((prev) => [...prev]);
-  }, [genre, year, rating]);
+    if (!search && data.length === 0) {
+      fetchData("Avengers", 1); // You can change this default
+    }
+  }, [search]);
 
-  //  Filtering logic (independent)
+  //  Track user interaction (search or filters)
+  useEffect(() => {
+    if (search || genre || year || rating) {
+      setHasInteracted(true);
+    }
+  }, [search, genre, year, rating]);
+
+  // Independent filtering logic
   const filteredMovies = useMemo(() => {
     return data.filter((movie) => {
-      const movieGenres = movie.Genre ? movie.Genre.toLowerCase().split(", ") : [];
+      const movieGenres = movie.Genre
+        ? movie.Genre.split(",").map((g) => g.trim().toLowerCase())
+        : [];
       const movieYear = movie.Year || "";
       const movieRating = parseFloat(movie.imdbRating) || 0;
 
-      const matchYear = !year || movieYear.includes(year);
+      const matchYear = !year || movieYear.includes(year.toString());
       const matchGenre =
-        !genre || movieGenres.some((g) => g.trim() === genre.toLowerCase());
-      const matchRating = !rating || movieRating >= parseFloat(rating);
+        !genre || movieGenres.includes(genre.toLowerCase());
+      const matchRating =
+        !rating || movieRating >= parseFloat(rating);
 
       return matchYear && matchGenre && matchRating;
     });
@@ -119,8 +135,8 @@ const Home = () => {
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-[#0a0a0a] to-gray-900 opacity-90 pointer-events-none" />
 
-      {/* Placeholder if no results */}
-      {filteredMovies.length === 0 && !Loading && <Placeholder />}
+      {/* Placeholder */}
+      {filteredMovies.length === 0 && !Loading && hasInteracted && <Placeholder />}
 
       {/* Movie Grid */}
       <div className="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 z-10">
@@ -144,7 +160,7 @@ const Home = () => {
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
 
-              {/* Movie Info */}
+              {/* Info */}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <h2 className="text-lg font-semibold truncate">{ele.Title}</h2>
                 <div className="flex justify-between text-gray-300 text-sm mt-1">
@@ -155,7 +171,7 @@ const Home = () => {
                   🎭 {ele.Genre}
                 </p>
 
-                {/*10-Star Rating System */}
+                {/* Rating System */}
                 <div className="flex mt-2 flex-wrap gap-[2px]">
                   {[...Array(10)].map((_, index) => {
                     const star = index + 1;
@@ -188,11 +204,10 @@ const Home = () => {
         ))}
       </div>
 
-      {/* Loading Spinner */}
+      {/* Loader */}
       {Loading && <Loading1 />}
     </div>
   );
 };
 
 export default Home;
-
